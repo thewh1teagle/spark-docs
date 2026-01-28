@@ -11,3 +11,31 @@ uv pip install -r requirements.txt
 uv run python setup.py bdist_wheel
 uv pip install dist/*.whl
 ```
+
+Build (CUDA)
+
+```
+sudo apt install cmake build-essential
+
+git clone https://github.com/k2-fsa/k2.git k2-repo
+cd k2-repo
+
+# enable CUDA
+export K2_WITH_CUDA=1
+export CUDA_HOME=/usr/local/cuda
+export CUDACXX=$CUDA_HOME/bin/nvcc
+
+# GB10 / sm_121
+export TORCH_CUDA_ARCH_LIST="12.1"
+
+export K2_MAKE_ARGS="-j$(nproc)"
+export K2_CMAKE_ARGS="-DCMAKE_BUILD_TYPE=Release"
+
+uv venv -p3.12 --seed
+uv pip install -r requirements.txt
+uv pip install -U torch torchaudio --index-url https://download.pytorch.org/whl/cu130
+uv pip install numpy
+
+uv run python setup.py bdist_wheel
+uv pip install dist/*.whl
+```
