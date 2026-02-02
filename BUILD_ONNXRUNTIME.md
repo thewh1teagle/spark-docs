@@ -44,7 +44,7 @@ export CPATH=/usr/local/cuda/targets/sbsa-linux/include/cccl:$CPATH
   --use_cuda \
   --cuda_home /usr/local/cuda \
   --cudnn_home /usr \
-  --cmake_extra_defines CMAKE_CUDA_ARCHITECTURES=120 \
+  --cmake_extra_defines CMAKE_CUDA_ARCHITECTURES=121 \
     "CUDNN_INCLUDE_DIR=/usr/include/aarch64-linux-gnu" \
     "CUDNN_LIBRARY=/usr/lib/aarch64-linux-gnu/libcudnn.so" \
   --build_wheel \
