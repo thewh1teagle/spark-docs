@@ -12,7 +12,12 @@
 sudo apt install build-essential python3-dev python3-pip python3-numpy python3-numpy-dev
 ```
 
-Download cuDNN from [NVIDIA cuDNN Downloads](https://developer.nvidia.com/cudnn-downloads?target_os=Linux&target_arch=arm64-sbsa&Compilation=Native&Distribution=Ubuntu&target_version=24.04&target_type=deb_local&Configuration=Full).
+cuDNN should already be installed via the system packages (`cudnn9-cuda-13`).
+If not, download from [NVIDIA cuDNN Downloads](https://developer.nvidia.com/cudnn-downloads?target_os=Linux&target_arch=arm64-sbsa&Compilation=Native&Distribution=Ubuntu&target_version=24.04&target_type=deb_local&Configuration=Full).
+
+> **Note:** On DGX Spark, cuDNN headers are installed at `/usr/include/aarch64-linux-gnu/`
+> and libraries at `/usr/lib/aarch64-linux-gnu/`, not under `/usr/local/cuda/`.
+> The build command below uses custom cmake defines to handle this.
 
 ## Clone
 
@@ -36,11 +41,21 @@ export CPATH=/usr/local/cuda/targets/sbsa-linux/include/cccl:$CPATH
   --parallel \
   --use_cuda \
   --cuda_home /usr/local/cuda \
-  --cudnn_home /usr/local/cuda \
+  --cudnn_home /usr \
   --cmake_extra_defines CMAKE_CUDA_ARCHITECTURES=90 \
+    "CUDNN_INCLUDE_DIR=/usr/include/aarch64-linux-gnu" \
+    "CUDNN_LIBRARY=/usr/lib/aarch64-linux-gnu/libcudnn.so" \
   --build_wheel \
   --skip_tests
 # Note: --cuda_version is optional - it auto-detects from /usr/local/cuda/version.json
+```
+
+## Install
+
+The wheel is output to `build/Linux/Release/dist/`:
+
+```console
+pip install build/Linux/Release/dist/onnxruntime_gpu-*.whl
 ```
 
 ## Alternative: Pre-built Wheels
