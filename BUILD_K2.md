@@ -1,26 +1,33 @@
-Build (CPU)
+# Build K2
+
+## Prerequisites
 
 ```console
 sudo apt install cmake build-essential
+```
+
+## CPU Build
+
+```console
 git clone https://github.com/k2-fsa/k2.git k2-repo
 cd k2-repo
+
 export K2_MAKE_ARGS="-j$(nproc)"
 export K2_CMAKE_ARGS="-DCMAKE_BUILD_TYPE=Release -DK2_WITH_CUDA=OFF -DCUDAARCHS="
+
 uv venv -p3.12
 uv pip install -r requirements.txt
 uv run python setup.py bdist_wheel
 uv pip install dist/*.whl
 ```
 
-Build (CUDA)
+## CUDA Build
 
-```
-sudo apt install cmake build-essential
-
+```console
 git clone https://github.com/k2-fsa/k2.git k2-repo
 cd k2-repo
 
-# enable CUDA
+# Enable CUDA
 export K2_WITH_CUDA=1
 export CUDA_HOME=/usr/local/cuda
 export CUDACXX=$CUDA_HOME/bin/nvcc

@@ -1,23 +1,35 @@
-# OnnxRuntime
+# Build OnnxRuntime
 
+## Related Issues
 
-Issue: https://github.com/microsoft/onnxruntime/issues/26351
-https://github.com/microsoft/onnxruntime/issues/25936
-https://github.com/microsoft/onnxruntime/pull/26671
-Maybe build from source
+- [onnxruntime#26351](https://github.com/microsoft/onnxruntime/issues/26351)
+- [onnxruntime#25936](https://github.com/microsoft/onnxruntime/issues/25936)
+- [onnxruntime#26671](https://github.com/microsoft/onnxruntime/pull/26671) — include path fix
 
+## Prerequisites
+
+```console
+sudo apt install build-essential python3-dev python3-pip python3-numpy python3-numpy-dev
+```
+
+Download cuDNN from [NVIDIA cuDNN Downloads](https://developer.nvidia.com/cudnn-downloads?target_os=Linux&target_arch=arm64-sbsa&Compilation=Native&Distribution=Ubuntu&target_version=24.04&target_type=deb_local&Configuration=Full).
+
+## Clone
 
 ```console
 git clone --recursive https://github.com/microsoft/onnxruntime
 cd onnxruntime
 ```
 
-Build
+## Build
+
+Apply the include path fix from [#26671](https://github.com/microsoft/onnxruntime/pull/26671), then:
 
 ```console
 export CPLUS_INCLUDE_PATH=/usr/local/cuda/targets/sbsa-linux/include/cccl:$CPLUS_INCLUDE_PATH
 export C_INCLUDE_PATH=/usr/local/cuda/targets/sbsa-linux/include/cccl:$C_INCLUDE_PATH
 export CPATH=/usr/local/cuda/targets/sbsa-linux/include/cccl:$CPATH
+
 ./build.sh \
   --config Release \
   --build_shared_lib \
@@ -31,17 +43,7 @@ export CPATH=/usr/local/cuda/targets/sbsa-linux/include/cccl:$CPATH
 # Note: --cuda_version is optional - it auto-detects from /usr/local/cuda/version.json
 ```
 
-sudo apt install python3-numpy python3-numpy-dev
-sudo apt install build-essential python3-dev python3-pip
+## Alternative: Pre-built Wheels
 
-fix include path with 
-https://github.com/microsoft/onnxruntime/pull/26671
-
-
-Download cudnn
-
-https://developer.nvidia.com/cudnn-downloads?target_os=Linux&target_arch=arm64-sbsa&Compilation=Native&Distribution=Ubuntu&target_version=24.04&target_type=deb_local&Configuration=Full
-
-Maybe use this pre built wheel index
-
-https://pypi.jetson-ai-lab.io/sbsa/cu130
+Instead of building from source, try the pre-built wheel index at
+<https://pypi.jetson-ai-lab.io/sbsa/cu130>.
