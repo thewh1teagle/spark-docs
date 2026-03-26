@@ -56,4 +56,15 @@ uv pip install dist/*.whl
   3. Use .venv/bin/python setup.py bdist_wheel instead of uv run python — uv run resolves to the workspace venv if run inside a larger project directory, picking
    up the wrong torch                                                                                                                                            
   4. Unset CUDA env vars if you previously attempted a CUDA build in the same shell: unset CUDACXX K2_WITH_CUDA TORCH_CUDA_ARCH_LIST
+
                                                                                                                                        
+                                                                                                                                       
+                                                                                                                                       
+                                                                                                                                        Two fixes:                                                                                                                                                     
+                                                                                                                                                               
+  1. -DCUDAARCHS=121 in K2_CMAKE_ARGS — tells cmake's arch detection to use sm_121 instead of autodetecting. Without it, cmake's CUDA_DETECT_INSTALLED_GPUS      
+  returns 12.1(2.0) which the old cmake script doesn't understand.
+  2. SEND_ERROR → WARNING in select_compute_arch.cmake lines 250/254 — the unknown arch name 12.1(2.0) triggered a SEND_ERROR which causes cmake to mark         
+  configure as incomplete and skip generating the Makefile, even though k2's own arch candidate loop (lines 294-308) correctly handles sm_121 independently.     
+   
+  Together: cmake no longer errors out on the unknown arch string, and k2's own loop builds for all candidates including 121.    
