@@ -46,3 +46,14 @@ uv pip install numpy
 uv run python setup.py bdist_wheel
 uv pip install dist/*.whl
 ```
+
+
+ For the CPU build, add these notes:
+
+  1. Remove -DCUDAARCHS= from K2_CMAKE_ARGS — passing an empty value causes CMake to error on newer versions                                                     
+  2. Install CPU torch explicitly before building: uv pip install torch --index-url https://download.pytorch.org/whl/cpu — even with K2_WITH_CUDA=OFF, torch's
+  cmake will try to enable CUDA if it finds a CUDA-built torch in the venv                                                                                       
+  3. Use .venv/bin/python setup.py bdist_wheel instead of uv run python — uv run resolves to the workspace venv if run inside a larger project directory, picking
+   up the wrong torch                                                                                                                                            
+  4. Unset CUDA env vars if you previously attempted a CUDA build in the same shell: unset CUDACXX K2_WITH_CUDA TORCH_CUDA_ARCH_LIST
+                                                                                                                                       
